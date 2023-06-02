@@ -4,20 +4,19 @@ Author:Rich Davison
 Contact:richgdavison@gmail.com
 License: MIT (see LICENSE file at the top of the source tree)
 *//////////////////////////////////////////////////////////////////////////////
-#include "Tutorial8.h"
+#pragma once
+#include "OGLRenderer.h"
 
-using namespace NCL;
-using namespace Rendering;
-using namespace CSC8502;
+namespace NCL::CSC8502 {
+	using namespace Rendering;
+	class TutorialRenderer : public OGLRenderer {
+	public:
+		TutorialRenderer();
+		~TutorialRenderer();
 
-Tutorial8::Tutorial8() : TutorialRenderer() {
+		virtual void Update(float dt);
 
-}
+	protected:
 
-Tutorial8::~Tutorial8() {
-
-}
-
-void Tutorial8::RenderFrame() {
-
+	};
 }

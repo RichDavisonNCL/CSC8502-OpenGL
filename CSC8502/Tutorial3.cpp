@@ -10,7 +10,7 @@ using namespace NCL;
 using namespace Rendering;
 using namespace CSC8502;
 
-Tutorial3::Tutorial3() : OGLRenderer(*Window::GetWindow()) {
+Tutorial3::Tutorial3() : TutorialRenderer() {
 
 }
 

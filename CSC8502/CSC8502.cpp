@@ -38,10 +38,20 @@ int main() {
 	//auto* r = new Tutorial3();
 	//auto* r = new Tutorial4();
 	//auto* r = new Tutorial5();
+	// 
 	//Week 2
-
+	//auto* r = new Tutorial6();
+	//auto* r = new Tutorial7();
+	//auto* r = new Tutorial8();
+	//auto* r = new Tutorial9();
+	//auto* r = new Tutorial10();
 	//Week 3
-
+	//auto* r = new Tutorial11();
+	//auto* r = new Tutorial12();
+	//auto* r = new Tutorial13();
+	//auto* r = new Tutorial14();
+	//auto* r = new Tutorial15();
+	// 
 	//Extras
 
 	w->SetConsolePosition(2000, 200);
@@ -51,7 +61,8 @@ int main() {
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		float time = w->GetTimer()->GetTimeDeltaSeconds();
-
+		r->Update(time);
+		r->Render();
 	}
 
 	Window::DestroyGameWindow();
