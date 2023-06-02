@@ -60,7 +60,6 @@ endif()
 # Dependencies
 ################################################################################
 target_include_directories (${PROJECT_NAME} 
-    PUBLIC ${Vulkan_INCLUDE_DIR}
     PUBLIC ${CMAKE_SOURCE_DIR}/NCLCoreClasses
     PUBLIC ${CMAKE_SOURCE_DIR}/OpenGLRendering
     PUBLIC ${CMAKE_SOURCE_DIR}/GLTFLoader
@@ -79,3 +78,6 @@ add_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE ${PROJECT_DEPENDENCIES}
 )
+
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC NCLCoreClasses)
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC OpenGLRendering)
