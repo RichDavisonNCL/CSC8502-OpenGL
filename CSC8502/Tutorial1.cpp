@@ -11,13 +11,15 @@ using namespace Rendering;
 using namespace CSC8502;
 
 Tutorial1::Tutorial1() : TutorialRenderer(){
-
+	shader = new OGLShader("Tutorial1.vert", "Tutorial1.frag");
 }
 
 Tutorial1::~Tutorial1() {
-
+	delete shader;
 }
 
 void Tutorial1::RenderFrame() {
-
+	UseShader(shader);
+	BindMesh(triMesh);
+	DrawBoundMesh();
 }

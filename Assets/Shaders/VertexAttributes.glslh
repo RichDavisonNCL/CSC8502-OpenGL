@@ -1,0 +1,23 @@
+layout (location = 0) in vec3 inPos;
+layout (location = 1) in vec4 inColour;
+layout (location = 2) in vec2 inUV;
+layout (location = 3) in vec3 inNormal;
+layout (location = 4) in vec4 inTangent;
+
+layout (location = 5) in vec4	inJointWeights;
+layout (location = 6) in ivec4	inJointIndices;
+
+void TransformNormal(mat4 modelMat, out vec3 normal) {
+	mat3 normalMatrix = inverse(transpose(mat3(modelMat)));
+
+	normal = normalize(inNormal * normalMatrix);
+}
+
+void CreateTBNVectors(mat4 modelMat, out vec3 normal, out vec3 tangent, out vec3 bitangent) {
+	mat3 normalMatrix = inverse(transpose(mat3(modelMat)));
+
+	normal = inNormal * normalMatrix;
+	tangent = inTangent.xyz * normalMatrix;
+
+	bitangent = cross(normal, tangent.xyz) * inTangent.w;
+}

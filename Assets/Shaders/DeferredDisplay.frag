@@ -1,0 +1,28 @@
+#version 450 core
+
+uniform sampler2D albedoTex ;
+uniform sampler2D diffuseLight ;
+uniform sampler2D specularLight ;
+
+in Vertex {
+	vec2 uv;
+} IN ;
+
+ out vec4 fragColour ;
+
+ void main ( void ) {
+	 vec3 albedo = texture ( albedoTex , IN . uv ). xyz ;
+	 vec3 diffuse = texture ( diffuseLight , IN . uv ). xyz ;
+	 vec3 specular = texture ( specularLight , IN . uv ). xyz ;
+
+	 fragColour . xyz = albedo * 0.1; // ambient
+	 fragColour . xyz += albedo * diffuse ; // lambert
+	 fragColour . xyz += specular ; // Specular
+	 fragColour . a = 1.0;
+
+	 fragColour.xyz = vec3(1,0,0);
+	 fragColour.xyz = albedo;
+
+	 fragColour.xyz = specular;
+	 //fragColour.xy = IN.uv;
+ }

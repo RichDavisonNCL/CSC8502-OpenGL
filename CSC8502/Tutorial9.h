@@ -15,8 +15,16 @@ namespace NCL::CSC8502 {
 		~Tutorial9();
 
 		void RenderFrame() override;
+		void Update(float dt);
 
 	protected:
+		OGLShader*	shader;
+		OGLMesh*	mesh;
+		MeshAnimation* anim;
 
+		float	frameTime;
+		int		currentFrame;
+	
+		StructuredOGLBuffer<Matrix4>* joints;
 	};
 }

@@ -15,8 +15,9 @@ namespace NCL::CSC8502 {
 		~Tutorial3();
 
 		void RenderFrame() override;
+		void Update(float dt) override;
 
 	protected:
-
+		OGLShader* shader;
 	};
 }

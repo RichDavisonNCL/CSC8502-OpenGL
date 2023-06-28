@@ -21,15 +21,21 @@ set(ALL_FILES
 add_executable(${PROJECT_NAME} ${ALL_FILES})
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
+    <chrono>
     <memory>
-    <unordered_set>
+
     <vector>
+    <set>    
+    <unordered_set>
+    <map>   
+
     <string>
     <fstream>
     <iostream>
     <string>
     <iosfwd>
-    <set>
+ 
+    <assert.h>
 
     <Matrix2.h>
     <Matrix3.h>
@@ -37,10 +43,19 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
     <Vector2.h>
     <Vector3.h>
     <Vector4.h>
+    <Vector2i.h>
+    <Vector3i.h>
+    <Vector4i.h>
     <Quaternion.h>
 
+    <GameTimer.h>
     <Camera.h>
     <TextureLoader.h>
+
+    <OGLMesh.h>
+    <OGLShader.h>
+    <OGLComputeShader.h>
+    <OGLTexture.h>
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

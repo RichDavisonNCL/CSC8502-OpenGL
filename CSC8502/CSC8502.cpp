@@ -33,7 +33,7 @@ int main() {
 	}
 
 	//Week 1
-	auto* r = new Tutorial1();
+	//auto* r = new Tutorial1();
 	//auto* r = new Tutorial2();
 	//auto* r = new Tutorial3();
 	//auto* r = new Tutorial4();
@@ -50,7 +50,7 @@ int main() {
 	//auto* r = new Tutorial12();
 	//auto* r = new Tutorial13();
 	//auto* r = new Tutorial14();
-	//auto* r = new Tutorial15();
+	auto* r = new Tutorial15();
 	// 
 	//Extras
 
@@ -59,11 +59,12 @@ int main() {
 	w->LockMouseToWindow(true);
 	w->ShowOSPointer(false);
 
-	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
+	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float time = w->GetTimer()->GetTimeDeltaSeconds();
 		r->Update(time);
 		r->Render();
 	}
 
 	Window::DestroyGameWindow();
+	return 0;
 }

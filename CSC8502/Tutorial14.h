@@ -6,6 +6,7 @@ License: MIT (see LICENSE file at the top of the source tree)
 *//////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "TutorialRenderer.h"
+#include "Light.h"
 
 namespace NCL::CSC8502 {
 	using namespace Rendering;
@@ -17,6 +18,21 @@ namespace NCL::CSC8502 {
 		void RenderFrame() override;
 
 	protected:
+		void ShadowFillPass();
+		void SceneDrawPass();
 
+		void RenderSceneObjects();
+
+		OGLShader* fillShader;
+		OGLShader* drawShader;
+
+		Matrix4 shadowMatrix;
+
+		Light light;
+
+		GLuint shadowFBO;
+		GLuint shadowMap;
+
+		OGLTexture* brickAlbedo;
 	};
 }
