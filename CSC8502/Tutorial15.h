@@ -6,7 +6,10 @@ License: MIT (see LICENSE file at the top of the source tree)
 *//////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "TutorialRenderer.h"
-#include "Light.h"
+namespace NCL::Rendering {
+#include "./Shaders/ShaderInterop.h"
+#include "./Shaders/LightStruct.h"
+}
 
 namespace NCL::CSC8502 {
 	using namespace Rendering;

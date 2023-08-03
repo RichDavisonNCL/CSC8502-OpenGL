@@ -48,9 +48,9 @@ int main() {
 	//Week 3
 	//auto* r = new Tutorial11();
 	//auto* r = new Tutorial12();
-	//auto* r = new Tutorial13();
+	auto* r = new Tutorial13();
 	//auto* r = new Tutorial14();
-	auto* r = new Tutorial15();
+	//auto* r = new Tutorial15();
 	// 
 	//Extras
 

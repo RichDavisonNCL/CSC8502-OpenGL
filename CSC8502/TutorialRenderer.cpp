@@ -6,7 +6,10 @@ License: MIT (see LICENSE file at the top of the source tree)
 *//////////////////////////////////////////////////////////////////////////////
 #include "TutorialRenderer.h"
 #include "GLTFLoader.h"
-#include "Light.h"
+namespace NCL::Rendering {
+#include "./Shaders/ShaderInterop.h"
+#include "./Shaders/LightStruct.h"
+}
 
 using namespace NCL;
 using namespace Rendering;
@@ -24,7 +27,7 @@ TutorialRenderer::TutorialRenderer() : OGLRenderer(*Window::GetWindow()) ,
 	quadMesh	= CreateQuad();
 	sphereMesh	= LoadSingleMesh("uvSphere.gltf");
 
-	defaultCamera	= new Camera();
+	defaultCamera	= new PerspectiveCamera();
 	totalRunTime	= 0;
 }
 

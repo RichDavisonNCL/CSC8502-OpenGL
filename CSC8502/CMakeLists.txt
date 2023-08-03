@@ -78,6 +78,7 @@ target_include_directories (${PROJECT_NAME}
     PUBLIC ${CMAKE_SOURCE_DIR}/NCLCoreClasses
     PUBLIC ${CMAKE_SOURCE_DIR}/OpenGLRendering
     PUBLIC ${CMAKE_SOURCE_DIR}/GLTFLoader
+	PUBLIC ${ASSET_ROOT}
 )	
 
 set(PROJECT_DEPENDENCIES

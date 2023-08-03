@@ -9,10 +9,13 @@ License: MIT (see LICENSE file at the top of the source tree)
 #include "GLTFLoader.h"
 #include "OGLBuffer.h"
 
+namespace NCL::Rendering {
+	struct Light;
+}
+
 namespace NCL::CSC8502 {
 	using namespace Rendering;
-	struct Light;
-	
+
 	class TutorialRenderer : public OGLRenderer {
 	public:
 		TutorialRenderer();

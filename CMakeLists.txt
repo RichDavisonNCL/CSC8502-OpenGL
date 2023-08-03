@@ -40,7 +40,6 @@ add_subdirectory(CSC8502)
 
 FetchContent_Declare(nclassets 
 	URL https://github.com/RichDavisonNCL/NCLCoreAssets/raw/main/NCLCoreAssets.zip
-	#GIT_TAG main
 	DOWNLOAD_NO_EXTRACT true  	 
 )    
  

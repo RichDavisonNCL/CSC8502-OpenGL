@@ -1,9 +1,4 @@
-struct Light {
-	vec3	position;
-	float	radius;
-	vec3	intensity;
-	float	unused;
-};
+#include "LightStruct.h"
 
 void BlinnPhong(Light light, vec3 normal, vec3 viewPos, vec3 point, float r, out vec3 diffuse, out vec3 specular) {
 

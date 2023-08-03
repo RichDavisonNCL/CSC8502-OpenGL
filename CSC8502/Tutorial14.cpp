@@ -13,6 +13,15 @@ using namespace CSC8502;
 const int SHADOW_WIDTH = 2048;
 const int SHADOW_HEIGHT = 2048;
 
+
+namespace NCL::Rendering {
+#include "./Shaders/ShaderInterop.h"
+#include "./Shaders/LightStruct.h"
+}
+
+
+Light light;
+
 Tutorial14::Tutorial14() : TutorialRenderer() {
 	fillShader = new OGLShader("shadowFill.vert", "shadowFill.frag");
 	drawShader = new OGLShader("shadowDraw.vert", "shadowDraw.frag");
