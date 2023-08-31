@@ -18,6 +18,6 @@ namespace NCL::CSC8502 {
 		void Update(float dt) override;
 
 	protected:
-		OGLShader* shader;
+		UniqueOGLShader shader;
 	};
 }

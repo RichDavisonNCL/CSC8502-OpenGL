@@ -18,8 +18,8 @@ namespace NCL::CSC8502 {
 		void RenderFrame() override;
 
 	protected:
-		OGLMesh*	heightmap;
-		OGLShader*	shader;
-		OGLTexture* texture;
+		UniqueOGLMesh		heightmap;
+		UniqueOGLShader		shader;
+		UniqueOGLTexture	texture;
 	};
 }

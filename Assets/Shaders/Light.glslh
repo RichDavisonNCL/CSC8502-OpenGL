@@ -1,5 +1,32 @@
 #include "LightStruct.h"
 
+void AttenuatedBlinnPhong(Light light, vec3 normal, vec3 viewPos, vec3 point, float r, out vec3 diffuse, out vec3 specular) {
+
+	vec3 l = normalize(light.position - point);
+	vec3 v = normalize(viewPos - point);
+	vec3 h = normalize(l + v);
+
+	float d = length(light.position - point);
+
+	float attenuation = 1.0f / (d*d);
+
+	//How attenuated will the light be at r?
+	float maxAttenuation = 1.0f / (light.radius * light.radius);
+
+	float scaleFactor = 1.0f / (1.0f - maxAttenuation);
+
+	attenuation -= maxAttenuation; //make attenuation 0 at max
+	attenuation *=  scaleFactor;//change the curve slightly to boost attenuation back up at d = 0
+
+	float lambert = clamp(dot(normal, l), 0.0f, 1.0f);
+	float spec	= clamp(dot(normal, h), 0.0f, 1.0f);
+	spec = pow(spec, r);
+
+	diffuse		= light.intensity * lambert * attenuation;
+	specular	= light.intensity * spec * lambert * attenuation;
+}
+
+
 void BlinnPhong(Light light, vec3 normal, vec3 viewPos, vec3 point, float r, out vec3 diffuse, out vec3 specular) {
 
 	vec3 l = normalize(light.position - point);

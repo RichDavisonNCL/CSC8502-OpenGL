@@ -22,8 +22,8 @@ namespace NCL::CSC8502 {
 
 		void RenderSceneObjects();
 
-		OGLShader* fillShader;
-		OGLShader* drawShader;
+		UniqueOGLShader fillShader;
+		UniqueOGLShader drawShader;
 
 		Matrix4 shadowMatrix;
 
@@ -32,6 +32,6 @@ namespace NCL::CSC8502 {
 		GLuint shadowFBO;
 		GLuint shadowMap;
 
-		OGLTexture* brickAlbedo;
+		UniqueOGLTexture brickAlbedo;
 	};
 }

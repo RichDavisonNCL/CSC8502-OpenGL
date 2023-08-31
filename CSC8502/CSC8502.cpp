@@ -22,8 +22,31 @@ License: MIT (see LICENSE file at the top of the source tree)
 #include "Tutorial14.h"
 #include "Tutorial15.h"
 
+#include "NewVector.h"
+#include "NewMatrix.h"
+
 using namespace NCL;
 using namespace CSC8502;
+
+void NewVectorTest() {
+	NewVector3 a(1, 1, 1);
+	NewVector3 b(2, 2, 2);
+
+	NewVector3 c = a + b;
+
+	NewVector4 a4(c, 1.0f);
+
+	NewVector3 d = Maths::Cross(a, b);
+	float x = Maths::Dot(a, b);
+
+	float al = Maths::Length(a);
+
+	NewVector3 an = Maths::Normalise(a);
+
+	NewMatrix4 ma;
+	NewMatrix4 mb;
+	NewMatrix4 mc = ma * mb;
+}
 
 int main() {
 	Window* w = Window::CreateGameWindow("Welcome to CSC8502!", 1120, 768);
@@ -31,7 +54,7 @@ int main() {
 	if (!w->HasInitialised()) {
 		return -1;
 	}
-
+	NewVectorTest();
 	//Week 1
 	//auto* r = new Tutorial1();
 	//auto* r = new Tutorial2();
@@ -47,8 +70,8 @@ int main() {
 	//auto* r = new Tutorial10();
 	//Week 3
 	//auto* r = new Tutorial11();
-	//auto* r = new Tutorial12();
-	auto* r = new Tutorial13();
+	auto* r = new Tutorial12();
+	//auto* r = new Tutorial13();
 	//auto* r = new Tutorial14();
 	//auto* r = new Tutorial15();
 	// 
@@ -60,7 +83,7 @@ int main() {
 	w->ShowOSPointer(false);
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
-		float time = w->GetTimer()->GetTimeDeltaSeconds();
+		float time = w->GetTimer().GetTimeDeltaSeconds();
 		r->Update(time);
 		r->Render();
 	}

@@ -11,7 +11,7 @@ using namespace NCL;
 using namespace Rendering;
 using namespace CSC8502;
 
-void Heightmap::CreateHeightmap(const std::string& filename, Mesh* mesh, Vector3 worldScale, Vector2 uvScale)  {
+void Heightmap::CreateHeightmap(const std::string& filename, Mesh& mesh, Vector3 worldScale, Vector2 uvScale)  {
 	char* texData	= nullptr;
 	int texWidth	= 0;
 	int texHeight	= 0;
@@ -61,9 +61,7 @@ void Heightmap::CreateHeightmap(const std::string& filename, Mesh* mesh, Vector3
 		}		
 	}
 
-	mesh->SetVertexPositions(vertices);
-	mesh->SetVertexTextureCoords(uvCoords);
-	mesh->SetVertexIndices(indices);
-
-	mesh->RecalculateNormals();
+	mesh.SetVertexPositions(vertices);
+	mesh.SetVertexTextureCoords(uvCoords);
+	mesh.SetVertexIndices(indices);
 }

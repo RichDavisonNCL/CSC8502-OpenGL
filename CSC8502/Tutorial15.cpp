@@ -22,23 +22,23 @@ Tutorial15::Tutorial15() : TutorialRenderer() , lights(LIGHT_COUNT){
 	lightDiffuseTex		= CreateTexture(windowSize.x, windowSize.y, GL_RGBA16F);
 	lightSpecularTex	= CreateTexture(windowSize.x, windowSize.y, GL_RGBA16F);
 
-	gBufferShader	= new OGLShader("GBufferFill.vert", "GBufferFill.frag");
-	lightingShader	= new OGLShader("DeferredLighting.vert", "DeferredLighting.frag");
-	displayShader	= new OGLShader("DeferredDisplay.vert", "DeferredDisplay.frag");
+	gBufferShader	= std::make_unique<OGLShader>("GBufferFill.vert", "GBufferFill.frag");
+	lightingShader	= std::make_unique<OGLShader>("DeferredLighting.vert", "DeferredLighting.frag");
+	displayShader	= std::make_unique<OGLShader>("DeferredDisplay.vert", "DeferredDisplay.frag");
 
 	for (int i = 0; i < LIGHT_COUNT; ++i) {
-		Light& l = lights.cpuData[i];
-		l.position.x = Maths::RandomValue(-100, 100);
-		l.position.y = Maths::RandomValue(0, 5);
-		l.position.z = Maths::RandomValue(-100, 100);
+		Light& l = lights.elements[i];
+		l.position.x = Maths::RandomValue(-1024, 1024);
+		l.position.y = 10.0f + Maths::RandomValue(0, 32);
+		l.position.z = Maths::RandomValue(-1024, 1024);
 		
-		l.intensity.x = Maths::RandomValue(0.5f, 1000.0f);
-		l.intensity.y = Maths::RandomValue(0.5f, 1000.0f);
-		l.intensity.z = Maths::RandomValue(0.5f, 1000.0f);
+		l.intensity.x = Maths::RandomValue(100.0f, 1000.0f);
+		l.intensity.y = Maths::RandomValue(100.0f, 1000.0f);
+		l.intensity.z = Maths::RandomValue(100.0f, 1000.0f);
 		
-		l.radius = Maths::RandomValue(25.0f, 50.0f);
+		l.radius = Maths::RandomValue(100.0f, 250.0f);
 	}
-	lights.SyncData();
+	lights.GPUSync();
 	
 	glGenFramebuffers(1, &gBufferFBO);
 	glGenFramebuffers(1, &lightingFBO);
@@ -67,14 +67,15 @@ Tutorial15::Tutorial15() : TutorialRenderer() , lights(LIGHT_COUNT){
 		return;
 	}
 
-	heightmap = new OGLMesh();
-	Heightmap::CreateHeightmap("noise.png", heightmap, { 100,6.0f,100 }, { 32, 32 });
+	heightmap = std::make_unique <OGLMesh>();
+	Heightmap::CreateHeightmap("noise.png", *heightmap, { 1024,32.0f,1024 }, { 32, 32 });
+	CalculateNormalsTangents(*heightmap);
 	heightmap->UploadToGPU(this);
 
-	albedoTex	= (OGLTexture*)OGLTexture::RGBATextureFromFilename("Barren Reds.JPG");
-	bumpTex		= (OGLTexture*)OGLTexture::RGBATextureFromFilename("Barren RedsDOT3.JPG");
+	albedoTex	= OGLTexture::TextureFromFile("Barren Reds.JPG");
+	bumpTex		= OGLTexture::TextureFromFile("Barren RedsDOT3.JPG");
 
-	defaultCamera->SetPosition({ 0, 25, 33 }).SetPitch(-40.0f);
+	defaultCamera->SetPosition({ 0, 64, 0 }).SetPitch(-40.0f);
 }
 
 Tutorial15::~Tutorial15() {
@@ -87,14 +88,6 @@ Tutorial15::~Tutorial15() {
 
 	glDeleteTextures(1, &lightDiffuseTex);
 	glDeleteTextures(1, &lightSpecularTex);
-
-	delete gBufferShader;
-	delete lightingShader;
-	delete displayShader;
-
-	delete heightmap;
-	delete albedoTex;
-	delete bumpTex;
 }
 
 void Tutorial15::RenderFrame() {
@@ -108,12 +101,12 @@ void Tutorial15::FillGBufferPass() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 
-	UseShader(gBufferShader);
+	UseShader(*gBufferShader);
 	SetCameraUniforms(*defaultCamera, 0);
 	BindTextureToPipeline(albedoTex->GetObjectID(), "albedoTex", 0);
 	BindTextureToPipeline(bumpTex->GetObjectID(), "bumpTex", 1);
 	SetUniform("modelMatrix", Matrix4());
-	BindMesh(heightmap);
+	BindMesh(*heightmap);
 	DrawBoundMesh();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -125,8 +118,9 @@ void Tutorial15::LightRenderPass() {
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glEnable(GL_BLEND);
+	glCullFace(GL_FRONT);
 
-	UseShader(lightingShader);
+	UseShader(*lightingShader);
 	BindBufferAsSSBO(lights, 0);
 	SetCameraUniforms(*defaultCamera, 0);
 	BindTextureToPipeline(sceneDepthTex, "depthTex", 0);
@@ -141,23 +135,24 @@ void Tutorial15::LightRenderPass() {
 	SetUniform("inverseProjView", inverseMatrix);
 	SetUniform("pixelSize", pixelSize);
 
-	BindMesh(sphereMesh);
+	BindMesh(*sphereMesh);
 	DrawBoundMesh(0, LIGHT_COUNT);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_BLEND);
+	glCullFace(GL_BACK);
 }
 
 void Tutorial15::DisplayPass() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
 
-	UseShader(displayShader);
+	UseShader(*displayShader);
 	BindTextureToPipeline(sceneAlbedoTex, "albedoTex", 0);
 	BindTextureToPipeline(lightDiffuseTex, "diffuseLight", 1);
 	BindTextureToPipeline(lightSpecularTex, "specularLight", 2);
 
-	BindMesh(quadMesh);
+	BindMesh(*quadMesh);
 	DrawBoundMesh();
 }

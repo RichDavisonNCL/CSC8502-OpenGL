@@ -12,33 +12,34 @@ using namespace Rendering;
 using namespace CSC8502;
 
 Tutorial11::Tutorial11() : TutorialRenderer() {
-	shader = new OGLShader("lighting.vert", "lighting.frag");
+	shader = std::make_unique<OGLShader>("lighting.vert", "lighting.frag");
 
-	heightmap = new OGLMesh();
-	Heightmap::CreateHeightmap("noise.png", heightmap, { 10,1.0f,10 }, { 32, 32 });
+	heightmap = std::make_unique<OGLMesh>();
+	Heightmap::CreateHeightmap("noise.png", *heightmap, { 10,1.0f,10 }, { 32, 32 });
+	CalculateNormals(*heightmap);
+	CalculateNormals(*heightmap);
 	heightmap->UploadToGPU(this);
 
-	albedo = (OGLTexture*)OGLTexture::RGBATextureFromFilename("Barren Reds.JPG");
+	albedo = OGLTexture::TextureFromFile("Barren Reds.JPG");
 
-	light.position	= Vector3(50, 50, 50);
-	light.intensity = Vector3(100.0f, 100.0f, 100.0f) * 100;
-	light.radius	= 1000.0f;
+	light.elements[0].position	= Vector3(50, 50, 50);
+	light.elements[0].intensity	= Vector3(100.0f, 100.0f, 100.0f) * 100;
+	light.elements[0].radius		= 1000.0f;
+
+	light.GPUSync();
 
 	glEnable(GL_DEPTH_TEST);
 }
 
 Tutorial11::~Tutorial11() {
-	delete shader;
-	delete heightmap;
-	delete albedo;
 }
 
 void Tutorial11::RenderFrame() {
-	UseShader(shader);
+	UseShader(*shader);
 	SetCameraUniforms(*defaultCamera, 0);
-	SetLightUniforms(light, 5);
+	BindBufferAsUBO(light, 0);
 	BindTextureToPipeline(albedo->GetObjectID(), "albedoTex", 0);
 	SetUniform("modelMatrix", Matrix4());
-	BindMesh(heightmap);
+	BindMesh(*heightmap);
 	DrawBoundMesh();
 }

@@ -29,12 +29,12 @@ TutorialRenderer::TutorialRenderer() : OGLRenderer(*Window::GetWindow()) ,
 
 	defaultCamera	= new PerspectiveCamera();
 	totalRunTime	= 0;
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 }
 
 TutorialRenderer::~TutorialRenderer() {
-	delete triMesh;
-	delete quadMesh;
-	delete sphereMesh;
 	delete defaultCamera;
 }
 
@@ -43,8 +43,8 @@ void TutorialRenderer::Update(float dt) {
 	totalRunTime += dt;
 }
 
-OGLMesh* TutorialRenderer::CreateTriangle() {
-	OGLMesh* triMesh = new OGLMesh();
+UniqueOGLMesh TutorialRenderer::CreateTriangle() {
+	UniqueOGLMesh triMesh = std::make_unique<OGLMesh>();
 	triMesh->SetVertexPositions({ Vector3(-1,-1,0), Vector3(1,-1,0), Vector3(0,1,0) });
 	triMesh->SetVertexColours({ Vector4(1,0,0,1), Vector4(0,1,0,1), Vector4(0,0,1,1) });
 	triMesh->SetVertexTextureCoords({ Vector2(0,0), Vector2(1,0), Vector2(0.5, 1) });
@@ -57,8 +57,8 @@ OGLMesh* TutorialRenderer::CreateTriangle() {
 	return triMesh;
 }
 
-OGLMesh* TutorialRenderer::CreateQuad() {
-	OGLMesh* quadMesh = new OGLMesh();
+UniqueOGLMesh TutorialRenderer::CreateQuad() {
+	UniqueOGLMesh quadMesh = std::make_unique<OGLMesh>();
 	quadMesh->SetVertexPositions({ Vector3(-1,-1,0), Vector3(1,-1,0), Vector3(1,1,0), Vector3(-1,1,0) });
 	quadMesh->SetVertexTextureCoords({ Vector2(0,0), Vector2(1,0), Vector2(1, 1), Vector2(0, 1) });
 
@@ -78,14 +78,109 @@ OGLMesh* TutorialRenderer::CreateQuad() {
 	return quadMesh;
 }
 
-OGLMesh* TutorialRenderer::LoadSingleMesh(const std::string& filename) {
+SharedOGLMesh TutorialRenderer::LoadSingleMesh(const std::string& filename) {
 	gltf.Load(filename);
 
 	assert(!gltf.outMeshes.empty());
-	gltf.outMeshes[0]->UploadToGPU(this);
-	OGLMesh* m = (OGLMesh*)gltf.outMeshes[0];
+	//gltf.outMeshes[0]->UploadToGPU(this);
+	//OGLMesh* m = (OGLMesh*)gltf.outMeshes[0];
+
+	SharedOGLMesh mesh = std::dynamic_pointer_cast<OGLMesh>(gltf.outMeshes[0]);
+	mesh->UploadToGPU(this);
+
 	gltf.outMeshes.pop_back();
-	return m;
+	return mesh;
+}
+
+void TutorialRenderer::CalculateNormals(Mesh& m) const {
+	int count = m.GetPrimitiveCount();
+
+	vector<Vector3> newNormals;
+	newNormals.resize(m.GetVertexCount());
+
+	for (int i = 0; i < count; ++i) {
+		Vector3 a, b, c;
+		unsigned int ai, bi, ci;
+		m.GetTriangle(i, a, b, c);
+		m.GetVertexIndicesForTri(i, ai, bi, ci);
+
+		Vector3 n = Vector3::Cross(b - a, c - a);
+		n.Normalise();
+
+		newNormals[ai] += n;
+		newNormals[bi] += n;
+		newNormals[ci] += n;
+	}
+	for (int i = 0; i < newNormals.size(); ++i) {
+		newNormals[i].Normalise();
+	}
+
+	m.SetVertexNormals(newNormals);
+}
+
+void TutorialRenderer::CalculateNormalsTangents(Mesh& m) const {
+	size_t primCount = m.GetPrimitiveCount();
+	size_t vertCount = m.GetVertexCount();
+
+	vector<Vector4> newTangents;
+	newTangents.resize(vertCount);
+
+	vector<Vector3> newNormals;
+	newNormals.resize(vertCount);
+
+	const vector<Vector3>& positions	= m.GetPositionData();
+	const vector<Vector2>& UVs			= m.GetTextureCoordData();
+
+	if (positions.size() != UVs.size()) {
+		return;
+	}
+
+	for (int i = 0; i < primCount; ++i) {
+		unsigned int ai, bi, ci;
+		m.GetVertexIndicesForTri(i, ai, bi, ci);
+
+		Vector3 ba = positions[bi] - positions[ai];
+		Vector3 ca = positions[ci] - positions[ai];
+
+		Vector2 tba = UVs[bi] - UVs[ai];
+		Vector2 tca = UVs[ci] - UVs[ai];
+
+		Matrix2 texMatrix = Matrix2(tba, tca);
+		texMatrix.Invert();
+
+		Vector3 tangent		= ba * texMatrix.array[0][0] + ca * texMatrix.array[0][1];
+		Vector3 binormal	= ba * texMatrix.array[1][0] + ca * texMatrix.array[1][1];
+
+		Vector3 normal	= Vector3::Cross(ba, ca);
+		Vector3 biCross = Vector3::Cross(tangent, normal);
+
+		float handedness = 1.0f;
+		if (Vector3::Dot(biCross, binormal) < 0.0f) {
+			handedness = -1.0f;
+		}
+
+		Vector4 t(tangent.x, tangent.y, tangent.z, handedness);
+
+		newTangents[ai] += t;
+		newTangents[bi] += t;
+		newTangents[ci] += t;
+
+		newNormals[ai] += normal;
+		newNormals[bi] += normal;
+		newNormals[ci] += normal;
+	}
+
+	for (int i = 0; i < vertCount; ++i) {
+		float handedness = newTangents[i].w > 0.0f ? 1.0f : -1.0f;
+		newTangents[i].w = 0.0f;
+		newTangents[i].Normalise();
+		newTangents[i].w = handedness;
+
+		newNormals[i].Normalise();
+	}
+
+	m.SetVertexTangents(newTangents);
+	m.SetVertexNormals(newNormals);
 }
 
 
@@ -170,8 +265,8 @@ void TutorialRenderer::BindTextureToPipeline(GLuint texID, const std::string& na
 	if (location == -1) {
 		return;
 	}
+	glUniform1i(location, texUnit);
 
 	glActiveTexture(GL_TEXTURE0 + texUnit);
 	glBindTexture(texType, texID);
-	glUniform1i(location, texUnit);
 }

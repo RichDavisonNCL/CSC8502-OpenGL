@@ -19,7 +19,7 @@ void main ( void ) {
 
 	Light l = lights[lightID];
 
-	vec3 scale = vec3 ( l.radius, l.radius, l.radius );
+	vec3 scale = vec3 ( l.radius, l.radius, l.radius);
 
 	vec3 worldPos = ( inPos * scale ) + l.position ;
 

@@ -23,10 +23,10 @@ namespace NCL::Rendering {
 Light light;
 
 Tutorial14::Tutorial14() : TutorialRenderer() {
-	fillShader = new OGLShader("shadowFill.vert", "shadowFill.frag");
-	drawShader = new OGLShader("shadowDraw.vert", "shadowDraw.frag");
+	fillShader = std::make_unique<OGLShader>("shadowFill.vert", "shadowFill.frag");
+	drawShader = std::make_unique<OGLShader>("shadowDraw.vert", "shadowDraw.frag");
 
-	brickAlbedo = (OGLTexture*)OGLTexture::RGBATextureFromFilename("Barren Reds.JPG");
+	brickAlbedo = OGLTexture::TextureFromFile("Barren Reds.JPG");
 
 	shadowMap = CreateTexture(SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT24);
 
@@ -50,10 +50,6 @@ Tutorial14::Tutorial14() : TutorialRenderer() {
 }
 
 Tutorial14::~Tutorial14() {
-	delete fillShader;
-	delete drawShader;
-	delete brickAlbedo;
-
 	glDeleteFramebuffers(1, &shadowFBO);
 	glDeleteTextures(1, &shadowMap);
 }
@@ -67,7 +63,7 @@ void Tutorial14::ShadowFillPass() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	glClear(GL_DEPTH_BUFFER_BIT);
-	UseShader(fillShader);
+	UseShader(*fillShader);
 
 	Matrix4 projMatrix = Matrix4::Perspective(10.0f, 200.0f, 1.0f, 45.0f);
 	Matrix4 viewMatrix = Matrix4::BuildViewMatrix(light.position, Vector3(), Vector3(0, 1, 0));
@@ -86,7 +82,7 @@ void Tutorial14::SceneDrawPass() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, windowSize.x, windowSize.y);
 
-	UseShader(drawShader);
+	UseShader(*drawShader);
 	SetCameraUniforms(*defaultCamera, 0);
 	SetLightUniforms(light, 5);
 	SetUniform("shadowMatrix", shadowMatrix);	
@@ -98,10 +94,10 @@ void Tutorial14::SceneDrawPass() {
 
 void Tutorial14::RenderSceneObjects() {
 	SetUniform("modelMatrix", Matrix4::Rotation(-90.0f, {1,0,0}) * Matrix4::Scale({25,25,25}));
-	BindMesh(quadMesh);
+	BindMesh(*quadMesh);
 	DrawBoundMesh();
 
 	SetUniform("modelMatrix", Matrix4::Translation({0, sin(totalRunTime) * 5, 0}));
-	BindMesh(sphereMesh);
+	BindMesh(*sphereMesh);
 	DrawBoundMesh();
 }

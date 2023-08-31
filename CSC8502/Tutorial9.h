@@ -18,13 +18,13 @@ namespace NCL::CSC8502 {
 		void Update(float dt);
 
 	protected:
-		OGLShader*	shader;
-		OGLMesh*	mesh;
-		MeshAnimation* anim;
+		UniqueOGLShader	shader;
+		SharedOGLMesh	mesh;
+		SharedMeshAnim	anim;
 
 		float	frameTime;
 		int		currentFrame;
 	
-		StructuredOGLBuffer<Matrix4>* joints;
+		StructuredOGLBuffer<Matrix4> joints;
 	};
 }

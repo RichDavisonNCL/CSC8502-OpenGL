@@ -15,9 +15,8 @@ out Vertex {
 
 void main() {
 	OUT.uv = inUV;
-	TransformNormal(modelMatrix, OUT.normal);
+	CreateTBNVectors(modelMatrix, OUT.tangent, OUT.bitangent, OUT.normal);
 
 	vec4 worldPos = modelMatrix * vec4(inPos, 1.0f);
-
 	gl_Position = cam.projMatrix * cam.viewMatrix * worldPos;
 }

@@ -1,6 +1,6 @@
 # version 450 core
-#include "light.glslh"
 #include "Camera.glslh"
+#include "light.glslh"
 
 uniform sampler2D depthTex;
 uniform sampler2D normTex;
@@ -33,9 +33,8 @@ void main ( void ) {
 	Light l = lights[IN.lightID];
 
 	float dist = length ( l.position - worldPos );
-	float atten = 1.0 - clamp ( dist / l.radius , 0.0 , 1.0);
 
-	if( atten == 0.0) {
+	if(dist > l.radius) {
 		discard;
 	}
 
@@ -44,11 +43,13 @@ void main ( void ) {
 	vec3 viewDir	= normalize ( cam.position - worldPos );
 	vec3 halfDir	= normalize ( incident + viewDir );
 
-	float lambert	= clamp ( dot ( incident , normal ) ,0.0 ,1.0);
-	float rFactor	= clamp ( dot ( halfDir , normal ) ,0.0 ,1.0);
-	float specFactor = clamp ( dot ( halfDir , normal ) ,0.0 ,1.0);
-	specFactor		= pow ( specFactor , 60.0 );
-	vec3 attenuated = l.intensity.xyz * atten ;
-	diffuseOutput	= vec4 ( attenuated * lambert , 1.0);
-	specularOutput	= vec4 ( attenuated * specFactor * 0.33 , 1.0);
+	vec3 diffuse	= vec3(0);
+	vec3 specular	= vec3(0);
+
+	float roughness = 50.0f;
+
+	AttenuatedBlinnPhong(l, normal, cam.position, worldPos, roughness, diffuse, specular);
+
+	diffuseOutput	= vec4 ( diffuse , 1.0);
+	specularOutput	= vec4 ( specular , 1.0);
 }

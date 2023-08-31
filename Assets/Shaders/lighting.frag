@@ -3,7 +3,10 @@
 #include "Light.glslh"
 
 layout(location = 0) uniform Camera cam;
-layout(location = 5) uniform Light light;
+
+layout(std140, binding = 1) uniform LightData {
+	Light light;
+};
 
 uniform sampler2D albedoTex;
 
@@ -27,4 +30,6 @@ void main() {
 	vec3 finalColour = ((diffuse * albedo.xyz) + specular);
 
 	fragColour = vec4(finalColour, albedo.w);
+
+	fragColour.rgb = IN.normal;
 }

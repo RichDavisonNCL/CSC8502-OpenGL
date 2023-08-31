@@ -12,36 +12,34 @@ using namespace Rendering;
 using namespace CSC8502;
 
 Tutorial9::Tutorial9() : TutorialRenderer()	{
-	shader = new OGLShader("skeletal.vert", "skeletal.frag");
+	shader = std::make_unique<OGLShader>("skeletal.vert", "skeletal.frag");
 
 	gltf.Load("CesiumMan/CesiumMan.gltf");
 
-	mesh = (OGLMesh*)gltf.outMeshes[0];
+	mesh = std::dynamic_pointer_cast<OGLMesh>(gltf.outMeshes[0]);
+
 	mesh->UploadToGPU(this);
 
 	anim = gltf.outAnims[0];
 
-	joints = new StructuredOGLBuffer<Matrix4>(mesh->GetJointCount());
+	joints = StructuredOGLBuffer<Matrix4>(mesh->GetJointCount());
 
 	frameTime	 = 0.0f;
 	currentFrame = 0;
 }
 
 Tutorial9::~Tutorial9() {
-	delete shader;
-	delete joints;
-
 }
 
 void Tutorial9::RenderFrame() {
-	UseShader(shader);
-	BindTextureToPipeline(((OGLTexture*)(gltf.outTextures[0]))->GetObjectID(), "albedoTex", 0);
+	UseShader(*shader);
+	BindTextureToPipeline(((OGLTexture*)&(*gltf.outTextures[0]))->GetObjectID(), "albedoTex", 0);
 
-	BindBufferAsSSBO(*joints, 0);
+	BindBufferAsSSBO(joints, 0);
 	SetCameraUniforms(*defaultCamera, 0);
 	SetUniform("modelMatrix", Matrix4());
 
-	BindMesh(mesh);
+	BindMesh(*mesh);
 	DrawBoundMesh();
 }
 
@@ -60,9 +58,9 @@ void Tutorial9::Update(float dt) {
 		vector<Matrix4> jointData(invBindPos.size());
 
 		for (int i = 0; i < invBindPos.size(); ++i) {
-			joints->cpuData[i] = (frameMats[i] * invBindPos[i]);
+			joints.elements[i] = (frameMats[i] * invBindPos[i]);
 		}
 
-		joints->SyncData();
+		joints.GPUSync();
 	}
 }

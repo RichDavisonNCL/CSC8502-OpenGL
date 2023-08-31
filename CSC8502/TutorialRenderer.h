@@ -24,10 +24,9 @@ namespace NCL::CSC8502 {
 		virtual void Update(float dt);
 
 	protected:
-		OGLMesh* CreateTriangle();
-		OGLMesh* CreateQuad();
-
-		OGLMesh* LoadSingleMesh(const std::string& filename);
+		UniqueOGLMesh CreateTriangle();
+		UniqueOGLMesh CreateQuad();
+		SharedOGLMesh LoadSingleMesh(const std::string& filename);
 
 		GLuint	CreateTexture(uint32_t width, uint32_t height, GLint internalformat, bool allocMips = false);
 
@@ -42,13 +41,12 @@ namespace NCL::CSC8502 {
 		void SetCameraUniforms(const Camera& c, GLuint slot);
 		void SetLightUniforms(const Light& l, GLuint slot);
 
-		OGLMesh* triMesh;			//Make in tutorial 1
-		OGLMesh* quadMesh;			//
-		OGLMesh* sphereMesh;
+		void CalculateNormals(Mesh& m) const;
+		void CalculateNormalsTangents(Mesh& m) const;
 
-		OGLTexture* defaultTex;		//
-
-		OGLTexture* defaultCubemap;	//	
+		UniqueOGLMesh triMesh;			//Make in tutorial 1
+		UniqueOGLMesh quadMesh;			//
+		SharedOGLMesh sphereMesh;
 
 		Camera* defaultCamera;
 

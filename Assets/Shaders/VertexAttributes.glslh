@@ -13,7 +13,7 @@ void TransformNormal(mat4 modelMat, out vec3 normal) {
 	normal = normalize(inNormal * normalMatrix);
 }
 
-void CreateTBNVectors(mat4 modelMat, out vec3 normal, out vec3 tangent, out vec3 bitangent) {
+void CreateTBNVectors(mat4 modelMat, out vec3 tangent, out vec3 bitangent, out vec3 normal ) {
 	mat3 normalMatrix = inverse(transpose(mat3(modelMat)));
 
 	normal = inNormal * normalMatrix;

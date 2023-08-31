@@ -17,13 +17,13 @@ namespace NCL::CSC8502 {
 		void RenderFrame() override;
 
 	protected:
-		OGLShader* groundShader;
-		OGLShader* skyboxShader;
-		OGLShader* reflectShader;
+		UniqueOGLShader groundShader;
+		UniqueOGLShader skyboxShader;
+		UniqueOGLShader reflectShader;
 
-		OGLTexture* albedo;
-		OGLTexture* skybox;
+		UniqueOGLTexture albedo;
+		UniqueOGLTexture skybox;
 
-		OGLMesh* heightmap;
+		UniqueOGLMesh	heightmap;
 	};
 }

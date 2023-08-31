@@ -7,12 +7,11 @@ License: MIT (see LICENSE file at the top of the source tree)
 #pragma once
 #include "TutorialRenderer.h"
 
-namespace NCL::Rendering {
-#include "./Shaders/ShaderInterop.h"
-#include "./Shaders/LightStruct.h"
-}
 
 namespace NCL::CSC8502 {
+	#include "./Shaders/ShaderInterop.h"
+	#include "./Shaders/LightStruct.h"
+
 	using namespace Rendering;
 	class Tutorial11 : public TutorialRenderer {
 	public:
@@ -22,9 +21,9 @@ namespace NCL::CSC8502 {
 		void RenderFrame() override;
 
 	protected:
-		OGLShader*	shader;
-		OGLMesh*	heightmap;
-		OGLTexture* albedo;
-		Light		light;
+		UniqueOGLShader		shader;
+		UniqueOGLMesh		heightmap;
+		UniqueOGLTexture	albedo;
+		StructuredOGLBuffer<Light> light;
 	};
 }

@@ -37,12 +37,12 @@ namespace NCL::CSC8502 {
 		GLuint	lightDiffuseTex;
 		GLuint	lightSpecularTex;
 
-		OGLShader* gBufferShader;
-		OGLShader* lightingShader;
-		OGLShader* displayShader;
+		UniqueOGLShader gBufferShader;
+		UniqueOGLShader lightingShader;
+		UniqueOGLShader displayShader;
 
-		OGLMesh* heightmap;
-		OGLTexture* albedoTex;
-		OGLTexture* bumpTex;
+		UniqueOGLMesh		heightmap;
+		UniqueOGLTexture	albedoTex;
+		UniqueOGLTexture	bumpTex;
 	};
 }

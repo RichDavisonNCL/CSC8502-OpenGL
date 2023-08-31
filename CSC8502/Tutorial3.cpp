@@ -11,11 +11,10 @@ using namespace Rendering;
 using namespace CSC8502;
 
 Tutorial3::Tutorial3() : TutorialRenderer() {
-	shader = new OGLShader("Tutorial3.vert", "Tutorial3.frag");
+	shader = std::make_unique<OGLShader>("Tutorial3.vert", "Tutorial3.frag");
 }
 
 Tutorial3::~Tutorial3() {
-	delete shader;
 }
 
 void Tutorial3::Update(float dt) {
@@ -23,7 +22,7 @@ void Tutorial3::Update(float dt) {
 }
 
 void Tutorial3::RenderFrame() {
-	UseShader(shader);
-	BindMesh(quadMesh);
+	UseShader(*shader);
+	BindMesh(*quadMesh);
 	DrawBoundMesh();
 }

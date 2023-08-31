@@ -11,6 +11,6 @@ namespace NCL::CSC8502 {
 	using namespace Rendering;
 	class Heightmap  {
 	public:
-		static void CreateHeightmap(const std::string& filename, Mesh* mesh, Vector3 worldScale, Vector2 uvScale);
+		static void CreateHeightmap(const std::string& filename, Mesh& mesh, Vector3 worldScale, Vector2 uvScale);
 	};
 }

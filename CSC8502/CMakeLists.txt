@@ -34,6 +34,8 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
     <iostream>
     <string>
     <iosfwd>
+
+    <algorithm>   
  
     <assert.h>
 

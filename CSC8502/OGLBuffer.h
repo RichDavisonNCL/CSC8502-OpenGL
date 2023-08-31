@@ -14,7 +14,7 @@ namespace NCL::CSC8502 {
 	template <typename T>
 	struct StructuredOGLBuffer : OGLBuffer{
 		StructuredOGLBuffer(size_t count = 1) {
-			cpuData = new T[count];
+			elements = new T[count];
 			GLuint flags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_DYNAMIC_STORAGE_BIT;
 
 			dataSize = sizeof(T) * count;
@@ -23,19 +23,19 @@ namespace NCL::CSC8502 {
 			glBufferStorage(GL_ARRAY_BUFFER, dataSize, 0, flags);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-			SyncData(); //T might have a sensible constructor
+			GPUSync(); //T might have a sensible constructor
 		}
 		~StructuredOGLBuffer() {
-			delete cpuData;
+			delete elements;
 		}
 
-		void SyncData() {
+		void GPUSync() {
 			glBindBuffer(GL_ARRAY_BUFFER, gpuID);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, cpuData);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, elements);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
 
-		T* cpuData;
+		T* elements;
 		size_t dataSize;
 	};
 }
