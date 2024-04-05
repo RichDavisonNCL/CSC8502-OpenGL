@@ -23,7 +23,7 @@ Tutorial12::Tutorial12() : TutorialRenderer() {
 	bump	= OGLTexture::TextureFromFile("Barren RedsDOT3.JPG");
 
 	light.elements[0].position	= Vector3(50, 50, 50);
-	light.elements[0].intensity = Vector3(100.0f, 100.0f, 100.0f) * 100;
+	light.elements[0].intensity = Vector3(100.0f, 100.0f, 100.0f) * 100.0f;
 	light.elements[0].radius	= 1000.0f;
 
 	light.GPUSync();

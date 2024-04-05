@@ -130,7 +130,7 @@ void Tutorial15::LightRenderPass() {
 	Matrix4 viewMatrix = defaultCamera->BuildViewMatrix();
 	Matrix4 projMatrix = defaultCamera->BuildProjectionMatrix(aspect);
 
-	Matrix4 inverseMatrix = (projMatrix * viewMatrix).Inverse();
+	Matrix4 inverseMatrix = Matrix::Inverse(projMatrix * viewMatrix);
 	Vector2 pixelSize = {1.0f / (float)windowSize.x, 1.0f / (float)windowSize.y};
 	SetUniform("inverseProjView", inverseMatrix);
 	SetUniform("pixelSize", pixelSize);

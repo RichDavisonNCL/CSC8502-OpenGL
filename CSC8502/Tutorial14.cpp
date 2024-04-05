@@ -45,7 +45,7 @@ Tutorial14::Tutorial14() : TutorialRenderer() {
 		.SetPosition({80,50,0});
 
 	light.position	= Vector3(50, 50, 50);
-	light.intensity = Vector3(100.0f, 100.0f, 100.0f) * 100;
+	light.intensity = Vector3(100.0f, 100.0f, 100.0f) * 100.0f;
 	light.radius	= 1000.0f;
 }
 
@@ -65,8 +65,8 @@ void Tutorial14::ShadowFillPass() {
 	glClear(GL_DEPTH_BUFFER_BIT);
 	UseShader(*fillShader);
 
-	Matrix4 projMatrix = Matrix4::Perspective(10.0f, 200.0f, 1.0f, 45.0f);
-	Matrix4 viewMatrix = Matrix4::BuildViewMatrix(light.position, Vector3(), Vector3(0, 1, 0));
+	Matrix4 projMatrix = Matrix::Perspective(10.0f, 200.0f, 1.0f, 45.0f);
+	Matrix4 viewMatrix = Matrix::View(light.position, Vector3(), Vector3(0, 1, 0));
 
 	//Matrix4 biasMatrix = Matrix4::Translation({ 0.5, 0.5, 0.5 }) * Matrix4::Scale({0.5, 0.5, 0.5});
 
@@ -93,11 +93,12 @@ void Tutorial14::SceneDrawPass() {
 }
 
 void Tutorial14::RenderSceneObjects() {
-	SetUniform("modelMatrix", Matrix4::Rotation(-90.0f, {1,0,0}) * Matrix4::Scale({25,25,25}));
+	auto vecTest = { 25.0f,25.0f,25.0f };
+	SetUniform("modelMatrix", Matrix::Rotation(-90.0f, {1,0,0}) * Matrix::Scale(Vector3{ 25.0f,25.0f,25.0f }));
 	BindMesh(*quadMesh);
 	DrawBoundMesh();
 
-	SetUniform("modelMatrix", Matrix4::Translation({0, sin(totalRunTime) * 5, 0}));
+	SetUniform("modelMatrix", Matrix::Translation(Vector3{0.0f, sin(totalRunTime) * 5.0f, 0.0f}));
 	BindMesh(*sphereMesh);
 	DrawBoundMesh();
 }

@@ -8,6 +8,7 @@ License: MIT (see LICENSE file at the top of the source tree)
 #include "OGLRenderer.h"
 #include "GLTFLoader.h"
 #include "OGLBuffer.h"
+#include "KeyboardMouseController.h"
 
 namespace NCL::Rendering {
 	struct Light;
@@ -22,6 +23,9 @@ namespace NCL::CSC8502 {
 		~TutorialRenderer();
 
 		virtual void Update(float dt);
+
+		static Mesh* MeshConstructionFunc();
+		static Texture* TextureConstructionFunc(const std::string& s);
 
 	protected:
 		UniqueOGLMesh CreateTriangle();
@@ -49,8 +53,9 @@ namespace NCL::CSC8502 {
 		SharedOGLMesh sphereMesh;
 
 		Camera* defaultCamera;
+		KeyboardMouseController controller;
 
-		GLTFLoader gltf;
+		GLTFScene	scene;
 
 		float totalRunTime;
 	};

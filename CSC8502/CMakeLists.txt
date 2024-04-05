@@ -39,15 +39,17 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
  
     <assert.h>
 
+    <NewVector.h>
+
     <Matrix2.h>
     <Matrix3.h>
     <Matrix4.h>
-    <Vector2.h>
-    <Vector3.h>
-    <Vector4.h>
-    <Vector2i.h>
-    <Vector3i.h>
-    <Vector4i.h>
+    #<Vector2.h>
+    #<Vector3.h>
+    #<Vector4.h>
+   # <Vector2i.h>
+    #<Vector3i.h>
+   # <Vector4i.h>
     <Quaternion.h>
 
     <GameTimer.h>

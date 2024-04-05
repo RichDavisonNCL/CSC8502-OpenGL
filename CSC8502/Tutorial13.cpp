@@ -58,7 +58,8 @@ void Tutorial13::RenderFrame() {
 	UseShader(*reflectShader);
 	SetCameraUniforms(*defaultCamera, 0);
 	BindTextureToPipeline(skybox->GetObjectID(), "cubeTex", 0, GL_TEXTURE_CUBE_MAP);
-	SetUniform("modelMatrix", Matrix4::Translation({0, 10, 0}) * Matrix4::Scale({ 4,4,4 }));
+
+	SetUniform("modelMatrix", Matrix::Translation(Vector3{0, 10, 0}) * Matrix::Scale(Vector3{ 4,4,4 }));
 	BindMesh(*sphereMesh);
 	DrawBoundMesh();
 }

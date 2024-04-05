@@ -24,10 +24,10 @@ void Heightmap::CreateHeightmap(const std::string& filename, Mesh& mesh, Vector3
 	int vCount = texWidth * texHeight;
 	int iCount = (texWidth - 1) * (texHeight - 1) * 6;
 
-	vector<Vector3> vertices(vCount, Vector3(0, 0, 0));
-	vector<Vector2> uvCoords(vCount, Vector3(0, 0, 0));
+	std::vector<Vector3> vertices(vCount, Vector3(0, 0, 0));
+	std::vector<Vector2> uvCoords(vCount, Vector2(0, 0));
 
-	vector<unsigned int> indices(iCount, 0);
+	std::vector<unsigned int> indices(iCount, 0);
 
 	float xAdvance = 2.0f / texWidth;
 	float zAdvance = 2.0f / texHeight;
