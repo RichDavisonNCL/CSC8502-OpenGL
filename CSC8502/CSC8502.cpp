@@ -6,21 +6,33 @@ License: MIT (see LICENSE file at the top of the source tree)
 *//////////////////////////////////////////////////////////////////////////////
 #include "../NCLCoreClasses/Window.h"
 
-#include "Tutorial1.h"
-#include "Tutorial2.h"
-#include "Tutorial3.h"
-#include "Tutorial4.h"
-#include "Tutorial5.h"
-#include "Tutorial6.h"
-#include "Tutorial7.h"
-#include "Tutorial8.h"
-#include "Tutorial9.h"
-#include "Tutorial10.h"
-#include "Tutorial11.h"
-#include "Tutorial12.h"
-#include "Tutorial13.h"
-#include "Tutorial14.h"
-#include "Tutorial15.h"
+#include "FirstTriangle.h"
+#include "Uniforms.h"
+#include "ModelMatrix.h"
+#include "ProjectionMatrix.h"
+#include "ViewMatrix.h"
+#include "DepthBuffer.h"
+#include "StencilBuffer.h"
+
+#include "IndexBuffers.h"
+#include "Instancing.h"
+#include "BuffersInterop.h"
+
+#include "SceneManagement.h"
+#include "MoreSceneManagement.h"
+#include "FrustumCulling.h"
+
+#include "Texturing.h"
+#include "Transparency.h"
+#include "SceneManagement.h"
+
+#include "SkeletalAnimation.h"
+
+#include "CubeMapping.h"
+#include "ShadowMapping.h"
+#include "DeferredRendering.h"
+
+
 
 #include "Vector.h"
 #include "Matrix.h"
@@ -29,31 +41,43 @@ using namespace NCL;
 using namespace CSC8502;
 
 int main() {
-	Window* w = Window::CreateGameWindow("Welcome to CSC8502!", 1120, 768);
+	NCL::WindowInitialisation winInit = {
+		.width = 1120,
+		.height = 768,
+		.windowTitle = "Welcome to OpenGL!",
+	};
+
+	Window* w = Window::CreateGameWindow(winInit);
 
 	if (!w->HasInitialised()) {
 		return -1;
 	}
 
 	//Week 1
-	//auto* r = new Tutorial1();
-	//auto* r = new Tutorial2();
-	//auto* r = new Tutorial3();
-	//auto* r = new Tutorial4();
-	//auto* r = new Tutorial5();
+	//auto* r = new FirstTriangle();
+	//auto* r = new Uniforms();
+	//auto* r = new ModelMatrix();
+	//auto* r = new ProjectionMatrix();
+	//auto* r = new ViewMatrix();
+	//auto* r = new DepthBuffer();
+	//auto* r = new StencilBuffer();
 	// 
 	//Week 2
-	//auto* r = new Tutorial6();
-	//auto* r = new Tutorial7();
-	//auto* r = new Tutorial8();
-	auto* r = new Tutorial9();
-	//auto* r = new Tutorial10();
+	//auto* r = new Texturing();
+	//auto* r = new Transparency();
+	//auto* r = new IndexBuffers();
+	//auto* r = new Instancing();
+	//auto* r = new BuffersInterop();
+	//auto* r = new SceneManagement();
+	//auto* r = new MoreSceneManagement();
+	//auto* r = new FrustumCulling();
+	auto* r = new SkeletalAnimation();
 	//Week 3
-	//auto* r = new Tutorial11();
-	//auto* r = new Tutorial12();
-	//auto* r = new Tutorial13();
-	//auto* r = new Tutorial14();
-	//auto* r = new Tutorial15();
+	//auto* r = new BasicLighting();
+	//auto* r = new BumpMapping();
+	//auto* r = new CubeMapping();
+	//auto* r = new ShadowMapping();
+	//auto* r = new DeferredRendering();
 	// 
 	//Extras
 
@@ -61,6 +85,12 @@ int main() {
 
 	w->LockMouseToWindow(true);
 	w->ShowOSPointer(false);
+
+	WindowEventHandler e = [&](WindowEvent e, uint32_t w, uint32_t h) {
+		r->WindowEventHandler(e, w, h);
+	};
+
+	w->SetWindowEventHandler(e);
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float time = w->GetTimer().GetTimeDeltaSeconds();
